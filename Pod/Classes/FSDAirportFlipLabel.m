@@ -9,84 +9,6 @@
 #import "FSDAirportFlipLabel.h"
 #import <AVFoundation/AVFoundation.h>
 
-// Singleton audio player to avoid multiple playbacks when multiple labels are flipping
-@interface FlipAudioPlayer : NSObject
-
-@property NSInteger labelsPlaying;
-@property BOOL volumeFading;
-
-@end
-
-@implementation FlipAudioPlayer {
-    AVAudioPlayer *flipAudioPlayer;
-}
-
-static FlipAudioPlayer *sharedInstance = nil;
-
-+ (FlipAudioPlayer *)sharedInstance {
-    if (sharedInstance == nil) {
-        sharedInstance = [[FlipAudioPlayer alloc] init];
-        sharedInstance.labelsPlaying = 0;
-        sharedInstance.volumeFading = NO;
-    }
-    
-    return sharedInstance;
-}
-
-- (instancetype)init {
-    if (self = [super init]) {
-        NSBundle *bundle = [NSBundle bundleWithURL:[[NSBundle mainBundle] URLForResource:@"FSDAirportFlipLabel" withExtension:@"bundle"]];
-        
-        NSURL *url = [bundle URLForResource:@"flipflap"
-                              withExtension:@"aiff"];
-        if (url) {
-            flipAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
-            flipAudioPlayer.numberOfLoops = -1;
-        }
-
-    }
-    
-    return self;
-}
-
-- (void)playFlipSound:(CGFloat)rate {
-    self.labelsPlaying++;
-    self.volumeFading = NO;
-    if (!flipAudioPlayer.isPlaying) {
-        flipAudioPlayer.rate = rate;
-        flipAudioPlayer.volume = 1.0;
-        [flipAudioPlayer play];
-    }
-}
-
-- (void)fadeVolume:(CGFloat)duration {
-    // fade by 0.2 every 0.2 seconds if it is last label playing sound
-    self.labelsPlaying--;
-    if (self.labelsPlaying <= 1) {
-        if (flipAudioPlayer.volume > 0.0 && !self.volumeFading) {
-            
-            flipAudioPlayer.volume = flipAudioPlayer.volume * 0.7;
-            self.volumeFading = YES;
-            [self performSelector:@selector(fadeVolume:)
-                       withObject:@(duration)
-                       afterDelay:duration];
-        }
-        else {
-            // Stop and get the sound ready for playing again
-            [self stopFlipSound];
-        }
-    }
-}
-
-- (void)stopFlipSound {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeVolume:) object:nil];
-    [flipAudioPlayer stop];
-    flipAudioPlayer.currentTime = 0;
-    [flipAudioPlayer prepareToPlay];
-}
-
-@end
-
 @interface FSDAirportFlipLabel () {
     NSInteger labelsInFlip;
 }
@@ -256,7 +178,7 @@ static FlipAudioPlayer *sharedInstance = nil;
                             
                             // if is is last 20% of labels, fade sound
                             if (labelsInFlip <= ceil(0.2 * self.text.length) && self.useSound) {
-                                [[FlipAudioPlayer sharedInstance] fadeVolume:self.flipDuration * labelsInFlip];
+                                
                             }
                             
                             //if it is was last label flipping, perform finish block
@@ -266,7 +188,7 @@ static FlipAudioPlayer *sharedInstance = nil;
                                 }
                                 
                                 if (self.useSound) {
-                                    [[FlipAudioPlayer sharedInstance] stopFlipSound];
+                                    
                                 }
                             }
                         } else {
@@ -277,13 +199,5 @@ static FlipAudioPlayer *sharedInstance = nil;
                     }];
 }
 
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect
- {
- // Drawing code
- }
- */
 
 @end
