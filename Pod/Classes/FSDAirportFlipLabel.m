@@ -119,7 +119,7 @@
         }
         
         if (self.useSound && labelsInFlip == 1) {
-            [[FlipAudioPlayer sharedInstance] playFlipSound:0.1f / self.flipDuration];
+//            [[FlipAudioPlayer sharedInstance] playFlipSound:0.1f / self.flipDuration];
         }
     }
 }
