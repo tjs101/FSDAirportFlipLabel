@@ -39,9 +39,11 @@ static FlipAudioPlayer *sharedInstance = nil;
         
         NSURL *url = [bundle URLForResource:@"flipflap"
                               withExtension:@"aiff"];
-        
-        flipAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
-        flipAudioPlayer.numberOfLoops = -1;
+        if (url) {
+            flipAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+            flipAudioPlayer.numberOfLoops = -1;
+        }
+
     }
     
     return self;
