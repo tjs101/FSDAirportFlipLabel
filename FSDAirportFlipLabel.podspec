@@ -10,10 +10,10 @@ Pod::Spec.new do |s|
   s.screenshots     = "https://raw.githubusercontent.com/felix-dumit/FSDAirportFlipLabel/master/example.gif"
   s.license          = 'MIT'
   s.author           = { "Felix Dumit" => "felix.dumit@gmail.com" }
-  s.source           = { :git => "https://github.com/felix-dumit/FSDAirportFlipLabel.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/tjs101/FSDAirportFlipLabel.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/felix_dumit'
 
-  s.platform     = :ios, '7.0'
+  s.platform     = :ios, '8.0'
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes/**/*'
